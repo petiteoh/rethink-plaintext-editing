@@ -37,7 +37,7 @@ function PlaintextEditor({ file, write }) {
   return (
     <div className={css.editor}>
       <form >
-        <textarea id="" value={fileText} onChange={changeFile}>
+        <textarea id="editarea" value={fileText} onChange={changeFile}>
 
         </textarea>
         <button onClick={saveFile}>save</button>
