@@ -25,6 +25,7 @@ const TYPE_TO_ICON = {
 };
 
 function FilesTable({ files, activeFile, setActiveFile }) {
+  // debugger
   return (
     <div className={css.files}>
       <table>
@@ -80,11 +81,13 @@ function Previewer({ file }) {
   const [value, setValue] = useState('');
 
   useEffect(() => {
+    // debugger
     (async () => {
       setValue(await file.text());
     })();
   }, [file]);
 
+  // debugger
   return (
     <div className={css.preview}>
       <div className={css.title}>{path.basename(file.name)}</div>
@@ -99,8 +102,8 @@ Previewer.propTypes = {
 
 // Uncomment keys to register editors for media types
 const REGISTERED_EDITORS = {
-  // "text/plain": PlaintextEditor,
-  // "text/markdown": MarkdownEditor,
+  "text/plain": PlaintextEditor,
+  "text/markdown": MarkdownEditor,
 };
 
 function PlaintextFilesChallenge() {
@@ -112,10 +115,23 @@ function PlaintextFilesChallenge() {
     setFiles(files);
   }, []);
 
-  const write = file => {
-    console.log('Writing soon... ', file.name);
+  const write = savedFile => {
+    // console.log('Writing soon... ', file.name);
 
     // TODO: Write the file to the `files` array
+    let newFiles = files.map((file, i) => {
+      if (file.name === savedFile.name) {
+        delete files[i];
+        setActiveFile(savedFile);
+        return files[i] = savedFile;
+        // return savedFile;
+      }
+
+      return file;
+    });
+
+    setFiles(newFiles);
+    console.log(files);
   };
 
   const Editor = activeFile ? REGISTERED_EDITORS[activeFile.type] : null;
@@ -158,7 +174,7 @@ function PlaintextFilesChallenge() {
         {activeFile && (
           <>
             {Editor && <Editor file={activeFile} write={write} />}
-            {!Editor && <Previewer file={activeFile} />}
+            {Editor && <Previewer file={activeFile} />}
           </>
         )}
 
